@@ -1,0 +1,78 @@
+ body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .user-type {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+        .user-option {
+            width: 48%;
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .user-option:hover {
+            border-color: #3498db;
+        }
+        .user-option.selected {
+            border-color: #3498db;
+            background-color: #f0f8ff;
+        }
+        .user-option i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .hidden {
+            display: none;
+        }

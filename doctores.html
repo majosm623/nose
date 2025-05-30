@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalificaDoctores - Encuentra y califica profesionales de salud</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/doctores.css">
+
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <h1>CalificaDoctores</h1>
+            <p>Encuentra y califica a los mejores profesionales de salud</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" placeholder="Buscar doctores por nombre, especialidad o ubicación...">
+            <button><i class="fas fa-search"></i> Buscar</button>
+        </div>
+        
+        <div class="doctors-grid">
+            <!-- Doctor 1 - Cardiólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Dr. López" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Javier López</div>
+                        <div class="doctor-specialty">Cardiólogo</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            4.5 (128)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en cardiología con más de 15 años de experiencia. Atención personalizada y tratamientos de vanguardia para enfermedades cardiovasculares.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Hospital Central</span>
+                        <span><i class="fas fa-phone"></i> 555-1234</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-lopez')">Calificar</button>
+                </div>
+            </div>
+            
+            <!-- Doctor 2 - Pediatra -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Dra. Martínez" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dra. Ana Martínez</div>
+                        <div class="doctor-specialty">Pediatra</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            5.0 (87)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Pediatra especializada en atención neonatal y cuidados intensivos infantiles. Con amplia experiencia en diagnóstico y tratamiento de enfermedades infantiles.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Clínica Infantil</span>
+                        <span><i class="fas fa-phone"></i> 555-5678</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-martinez')">Calificar</button>
+                </div>
+            </div>
+            
+            <!-- Doctor 3 - Ortopedista -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Dr. Rodríguez" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Carlos Rodríguez</div>
+                        <div class="doctor-specialty">Ortopedista</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            4.0 (64)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en ortopedia y traumatología. Experto en cirugías de reemplazo articular y tratamiento de lesiones deportivas.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Centro Médico Deportivo</span>
+                        <span><i class="fas fa-phone"></i> 555-9012</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-rodriguez')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 4 - Dermatólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/women/63.jpg" alt="Dra. García" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dra. Laura García</div>
+                        <div class="doctor-specialty">Dermatóloga</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            4.9 (142)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en dermatología clínica y cosmética. Tratamientos para acné, psoriasis y rejuvenecimiento facial.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Clínica Dermosalud</span>
+                        <span><i class="fas fa-phone"></i> 555-3456</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-garcia')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 5 - Ginecólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="Dra. Pérez" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dra. Sofía Pérez</div>
+                        <div class="doctor-specialty">Ginecóloga</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            4.7 (203)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en ginecología y obstetricia. Atención integral para la salud femenina en todas las etapas de la vida.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Centro Médico Mujer</span>
+                        <span><i class="fas fa-phone"></i> 555-7890</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-perez')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 6 - Neurólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Dr. González" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Ricardo González</div>
+                        <div class="doctor-specialty">Neurólogo</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            4.8 (96)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en neurología clínica. Experto en tratamiento de migrañas, epilepsia y enfermedades neurodegenerativas.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Instituto Neurológico</span>
+                        <span><i class="fas fa-phone"></i> 555-2345</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-gonzalez')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 7 - Oftalmólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/women/52.jpg" alt="Dra. Morales" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dra. Patricia Morales</div>
+                        <div class="doctor-specialty">Oftalmóloga</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            4.6 (178)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en cirugía refractiva y tratamiento de enfermedades oculares. Tecnología láser de última generación.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Clínica Oftalmológica</span>
+                        <span><i class="fas fa-phone"></i> 555-6789</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-morales')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 8 - Psiquiatra -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Dr. Silva" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Ernesto Silva</div>
+                        <div class="doctor-specialty">Psiquiatra</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            4.2 (115)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en salud mental. Tratamiento de depresión, ansiedad y trastornos del estado de ánimo. Terapia cognitivo-conductual.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Centro de Salud Mental</span>
+                        <span><i class="fas fa-phone"></i> 555-4567</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-silva')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 9 - Endocrinólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/women/37.jpg" alt="Dra. Núñez" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dra. Gabriela Núñez</div>
+                        <div class="doctor-specialty">Endocrinóloga</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            4.9 (132)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en diabetes, tiroides y trastornos metabólicos. Enfoque en medicina preventiva y tratamiento personalizado.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Instituto Endocrino</span>
+                        <span><i class="fas fa-phone"></i> 555-8901</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-nunez')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 10 - Gastroenterólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/men/53.jpg" alt="Dr. Fernández" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Luis Fernández</div>
+                        <div class="doctor-specialty">Gastroenterólogo</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            4.5 (87)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en enfermedades digestivas. Realiza endoscopías y colonoscopías con tecnología de punta.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Centro Digestivo</span>
+                        <span><i class="fas fa-phone"></i> 555-3456</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-fernandez')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 11 - Oncólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/women/49.jpg" alt="Dra. Ortega" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dra. Mariana Ortega</div>
+                        <div class="doctor-specialty">Oncóloga</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            5.0 (204)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en oncología médica. Tratamientos personalizados contra el cáncer con enfoque multidisciplinario.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Centro Oncológico</span>
+                        <span><i class="fas fa-phone"></i> 555-6789</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-ortega')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 12 - Neumólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/men/61.jpg" alt="Dr. Jiménez" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Oscar Jiménez</div>
+                        <div class="doctor-specialty">Neumólogo</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            4.1 (76)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en enfermedades respiratorias. Tratamiento para asma, EPOC y trastornos del sueño.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Instituto Pulmonar</span>
+                        <span><i class="fas fa-phone"></i> 555-0123</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-jimenez')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 13 - Urólogo -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/men/39.jpg" alt="Dr. Herrera" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Luis Herrera</div>
+                        <div class="doctor-specialty">Urólogo</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            4.6 (92)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en urología y salud masculina. Tratamiento de próstata, cálculos renales y disfunción eréctil.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Clínica Urológica</span>
+                        <span><i class="fas fa-phone"></i> 555-4567</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-herrera')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 14 - Médico Internista -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/women/34.jpg" alt="Dra. Díaz" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dra. Claudia Díaz</div>
+                        <div class="doctor-specialty">Médico Internista</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            4.9 (187)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en medicina interna para adultos. Diagnóstico y tratamiento de enfermedades complejas.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Hospital General</span>
+                        <span><i class="fas fa-phone"></i> 555-7890</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-diaz')">Calificar</button>
+                </div>
+            </div>
+
+            <!-- Doctor 15 - Cirujano Plástico -->
+            <div class="doctor-card">
+                <div class="doctor-header">
+                    <img src="https://randomuser.me/api/portraits/men/48.jpg" alt="Dr. Guzmán" class="doctor-avatar">
+                    <div class="doctor-info">
+                        <div class="doctor-name">Dr. Andrés Guzmán</div>
+                        <div class="doctor-specialty">Cirujano Plástico</div>
+                        <div class="doctor-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            4.7 (156)
+                        </div>
+                    </div>
+                </div>
+                <div class="doctor-body">
+                    <p class="doctor-description">Especialista en cirugía reconstructiva y estética. Procedimientos mínimamente invasivos con resultados naturales.</p>
+                    <div class="doctor-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Centro de Cirugía Estética</span>
+                        <span><i class="fas fa-phone"></i> 555-2345</span>
+                    </div>
+                </div>
+                <div class="doctor-footer">
+                    <button class="view-profile">Ver perfil</button>
+                    <button class="rate-doctor" onclick="openModal('dr-guzman')">Calificar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal para calificar doctor -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Calificar al doctor</h2>
+            <div class="review-form">
+                <div class="form-group">
+                    <label for="review-name">Tu nombre:</label>
+                    <input type="text" id="review-name" placeholder="Nombre (opcional)">
+                </div>
+                <div class="form-group">
+                    <label for="review-rating">Calificación:</label>
+                    <select id="review-rating">
+                        <option value="5">Excelente ★★★★★</option>
+                        <option value="4">Muy bueno ★★★★</option>
+                        <option value="3">Bueno ★★★</option>
+                        <option value="2">Regular ★★</option>
+                        <option value="1">Malo ★</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="review-comment">Tu comentario:</label>
+                    <textarea id="review-comment" placeholder="Describe tu experiencia con este doctor..."></textarea>
+                </div>
+                <button class="submit-review" onclick="submitReview()">Enviar calificación</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Funciones para el modal
+        function openModal(doctorId) {
+            document.getElementById('reviewModal').style.display = 'block';
+            // Aquí podrías guardar el ID del doctor para saber a quién se está calificando
+            document.getElementById('reviewModal').dataset.doctorId = doctorId;
+        }
+        
+        function closeModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+        
+        function submitReview() {
+            const name = document.getElementById('review-name').value;
+            const rating = document.getElementById('review-rating').value;
+            const comment = document.getElementById('review-comment').value;
+            const doctorId = document.getElementById('reviewModal').dataset.doctorId;
+            
+            // Aquí normalmente harías una llamada AJAX para guardar el comentario
+            // Por ahora solo mostraremos un alert y cerraremos el modal
+            alert(`¡Gracias por tu calificación! ${name ? 'Gracias ' + name : ''}`);
+            closeModal();
+            
+            // En una aplicación real, aquí actualizarías la lista de comentarios
+        }
+        
+        // Cerrar el modal si se hace click fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('reviewModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

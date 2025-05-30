@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamiento de Citas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/agenda.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-calendar-plus"></i> Agendar Cita Médica</h1>
+        
+   <div class="doctor-selector">
+    <h3>Seleccione una especialidad:</h3>
+    <select id="specialty-select">
+        <option value="">-- Todas las especialidades --</option>
+        <option value="Cardiología">Cardiología</option>
+        <option value="Pediatría">Pediatría</option>
+        <option value="Ortopedia">Ortopedia</option>
+        <option value="Dermatología">Dermatología</option>
+        <option value="Ginecología">Ginecología</option>
+        <option value="Neurología">Neurología</option>
+        <option value="Oftalmología">Oftalmología</option>
+        <option value="Psiquiatría">Psiquiatría</option>
+        <option value="Endocrinología">Endocrinología</option>
+        <option value="Gastroenterología">Gastroenterología</option>
+        <option value="Oncología">Oncología</option>
+        <option value="Neumología">Neumología</option>
+        <option value="Urología">Urología</option>
+        <option value="Medicina Interna">Medicina Interna</option>
+        <option value="Cirugía Plástica">Cirugía Plástica</option>
+    </select>
+
+    <h3>Seleccione un médico:</h3>
+    <select id="doctor-select">
+        <option value="">-- Seleccione un médico --</option>
+    </select>
+</div>
+
+<div id="time-slots-container" style="display: none;">
+    <h3>Horarios disponibles:</h3>
+    <div class="time-slots-section">
+        <h4>Turno mañana</h4>
+        <div id="morning-slots" class="time-slots-grid"></div>
+    </div>
+    <div class="time-slots-section">
+        <h4>Turno tarde</h4>
+        <div id="afternoon-slots" class="time-slots-grid"></div>
+    </div>
+</div>
+
+<div id="confirmation" style="display: none;">
+    <h3>Confirmación de cita</h3>
+    <p id="selected-slot-info"></p>
+    <button id="confirm-btn" onclick="confirmAppointment()">
+        <i class="fas fa-calendar-check"></i> Confirmar cita
+    </button>
+</div>
+        <div class="calendar">
+            <div class="weekdays">
+                <div class="weekday">Lunes</div>
+                <div class="weekday">Martes</div>
+                <div class="weekday">Miércoles</div>
+                <div class="weekday">Jueves</div>
+                <div class="weekday">Viernes</div>
+            </div>
+            
+            <h3>Horario Mañana (7:00 AM - 12:00 PM)</h3>
+            <div class="time-slots" id="morning-slots">
+            </div>
+            <h3 style="margin-top: 20px;">Horario Tarde (2:00 PM - 5:00 PM)</h3>
+            <div class="time-slots" id="afternoon-slots">
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--primary);"></div>
+                <span>Disponible</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--danger);"></div>
+                <span>No disponible</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: var(--success);"></div>
+                <span>Seleccionado</span>
+            </div>
+        </div>
+        
+        <div class="confirmation" id="confirmation">
+            <h3>Confirmación de Cita</h3>
+            <p id="selected-slot-info"></p>
+            <button id="confirm-btn" onclick="confirmAppointment()">
+                Confirmar Cita
+            </button>
+        </div>
+    </div>
+
+    <script>
+    // Variables globales
+    let selectedSlot = null;
+    let currentDoctor = null;
+    let availability = {};
+    const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+    const morningSlots = ['7:00', '8:00', '9:00', '10:00', '11:00'];
+    const afternoonSlots = ['14:00', '15:00', '16:00', '17:00'];
+    
+    // Obtener token de localStorage
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Debes iniciar sesión para agendar citas');
+        window.location.href = 'Iniciar Sesion.html';
+    }
+    
+    // Cargar médicos al iniciar
+    document.addEventListener('DOMContentLoaded', () => {
+        loadDoctors();
+        
+        // Configurar eventos para los selectores
+        document.getElementById('specialty-select').addEventListener('change', function() {
+            filterDoctors();
+            document.getElementById('confirmation').style.display = 'none';
+            selectedSlot = null;
+        });
+        
+        document.getElementById('doctor-select').addEventListener('change', function() {
+            currentDoctor = this.value;
+            if (currentDoctor) {
+                loadAvailability(currentDoctor);
+            } else {
+                document.getElementById('time-slots-container').style.display = 'none';
+                document.getElementById('confirmation').style.display = 'none';
+            }
+        });
+    });
+    
+    // Filtrar médicos por especialidad
+    function filterDoctors() {
+        const specialtySelect = document.getElementById('specialty-select');
+        const doctorSelect = document.getElementById('doctor-select');
+        const selectedSpecialty = specialtySelect.value;
+        
+        for (let i = 1; i < doctorSelect.options.length; i++) {
+            const option = doctorSelect.options[i];
+            const specialty = option.getAttribute('data-specialty');
+            
+            if (!selectedSpecialty || specialty === selectedSpecialty) {
+                option.style.display = '';
+            } else {
+                option.style.display = 'none';
+            }
+        }
+        
+        // Resetear selección de médico
+        doctorSelect.value = '';
+        currentDoctor = null;
+        document.getElementById('time-slots-container').style.display = 'none';
+    }
+    
+    // Cargar lista de médicos
+    async function loadDoctors() {
+        try {
+            const response = await fetch('http://localhost:5000/api/doctors', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Error al cargar médicos');
+            
+            const doctors = await response.json();
+            const select = document.getElementById('doctor-select');
+            
+            select.innerHTML = '<option value="">Seleccione un médico</option>';
+            doctors.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor.id;
+                option.textContent = `${doctor.nombres} ${doctor.apellidos} - ${doctor.especialidad}`;
+                option.setAttribute('data-specialty', doctor.especialidad);
+                select.appendChild(option);
+            });
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al cargar los médicos');
+        }
+    }
+    
+    // Cargar disponibilidad para un médico
+    async function loadAvailability(doctorId) {
+        try {
+            document.getElementById('time-slots-container').style.display = 'block';
+            document.getElementById('confirmation').style.display = 'none';
+            
+            // Simulamos una respuesta de la API
+            const today = new Date();
+            const nextMonday = new Date();
+            nextMonday.setDate(today.getDate() + (1 + 7 - today.getDay()) % 7);
+            
+            // Generar disponibilidad simulada
+            availability = {};
+            for (let i = 0; i < 5; i++) {
+                const date = new Date(nextMonday);
+                date.setDate(nextMonday.getDate() + i);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                availability[i] = {};
+                
+                // Mañana
+                morningSlots.forEach(time => {
+                    availability[i][time] = Math.random() > 0.3 ? 1 : 0;
+                });
+                
+                // Tarde
+                afternoonSlots.forEach(time => {
+                    availability[i][time] = Math.random() > 0.3 ? 1 : 0;
+                });
+            }
+            
+            generateTimeSlots();
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al cargar la disponibilidad');
+        }
+    }
+    
+    // Generar los slots de tiempo en la UI
+    function generateTimeSlots() {
+        const morningContainer = document.getElementById('morning-slots');
+        const afternoonContainer = document.getElementById('afternoon-slots');
+        
+        morningContainer.innerHTML = '';
+        afternoonContainer.innerHTML = '';
+        
+        // Crear encabezados de días
+        days.forEach((day, dayIndex) => {
+            // Encabezado de día
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'day-header';
+            dayHeader.textContent = day;
+            morningContainer.appendChild(dayHeader);
+            afternoonContainer.appendChild(dayHeader.cloneNode(true));
+        });
+        
+        // Crear slots de tiempo
+        days.forEach((day, dayIndex) => {
+            // Columnas para mañana
+            const morningColumn = document.createElement('div');
+            morningColumn.className = 'time-column';
+            
+            morningSlots.forEach(time => {
+                const isAvailable = availability[dayIndex][time] > 0;
+                
+                const slot = document.createElement('div');
+                slot.className = `time-slot morning ${isAvailable ? 'available' : 'unavailable'}`;
+                slot.textContent = time;
+                slot.dataset.day = dayIndex;
+                slot.dataset.time = time;
+                slot.dataset.available = isAvailable;
+                
+                if (isAvailable) {
+                    slot.addEventListener('click', () => selectTimeSlot(slot));
+                }
+                
+                morningColumn.appendChild(slot);
+            });
+            
+            morningContainer.appendChild(morningColumn);
+            
+            // Columnas para tarde
+            const afternoonColumn = document.createElement('div');
+            afternoonColumn.className = 'time-column';
+            
+            afternoonSlots.forEach(time => {
+                const isAvailable = availability[dayIndex][time] > 0;
+                
+                const slot = document.createElement('div');
+                slot.className = `time-slot afternoon ${isAvailable ? 'available' : 'unavailable'}`;
+                slot.textContent = time;
+                slot.dataset.day = dayIndex;
+                slot.dataset.time = time;
+                slot.dataset.available = isAvailable;
+                
+                if (isAvailable) {
+                    slot.addEventListener('click', () => selectTimeSlot(slot));
+                }
+                
+                afternoonColumn.appendChild(slot);
+            });
+            
+            afternoonContainer.appendChild(afternoonColumn);
+        });
+    }
+    
+    // Seleccionar un slot de tiempo
+    function selectTimeSlot(slot) {
+        if (selectedSlot) {
+            const prevDay = selectedSlot.dataset.day;
+            const prevTime = selectedSlot.dataset.time;
+            const isMorning = morningSlots.includes(prevTime);
+            
+            selectedSlot.className = `time-slot ${isMorning ? 'morning' : 'afternoon'} available`;
+        }
+        
+        selectedSlot = slot;
+        slot.classList.add('selected');
+        
+        const confirmation = document.getElementById('confirmation');
+        const dayName = days[parseInt(slot.dataset.day)];
+        document.getElementById('selected-slot-info').textContent = 
+            `Día: ${dayName} - Hora: ${slot.dataset.time}`;
+        confirmation.style.display = 'block';
+    }
+    
+    // Confirmar cita
+    async function confirmAppointment() {
+        if (!selectedSlot || !currentDoctor) return;
+        
+        const btn = document.getElementById('confirm-btn');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Procesando...`;
+        
+        const dayIndex = parseInt(selectedSlot.dataset.day);
+        const time = selectedSlot.dataset.time;
+        const today = new Date();
+        const nextMonday = new Date();
+        nextMonday.setDate(today.getDate() + (1 + 7 - today.getDay()) % 7);
+        
+        const selectedDate = new Date(nextMonday);
+        selectedDate.setDate(nextMonday.getDate() + dayIndex);
+        const dateStr = selectedDate.toISOString().split('T')[0];
+        
+        try {
+            const response = await fetch('http://localhost:5000/api/appointments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    doctor_id: currentDoctor,
+                    fecha: dateStr,
+                    hora: time
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                alert('Cita agendada exitosamente!');
+                
+                // Actualizar disponibilidad local
+                availability[dayIndex][time] = 0;
+                generateTimeSlots();
+                document.getElementById('confirmation').style.display = 'none';
+                selectedSlot = null;
+            } else {
+                throw new Error(result.message || 'Error al agendar cita');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
+</script>
+</body>
+</html>

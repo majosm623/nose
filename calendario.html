@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disponibilidad de Médicos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/calendario.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-calendar-alt"></i> Disponibilidad de Médicos</h1>
+        
+        <div class="doctor-selector">
+            <div>
+                <h3>Especialidad:</h3>
+                <select id="specialty-select">
+                    <option value="">Todas las especialidades</option>
+                    <option value="Cardiología">Cardiología</option>
+                    <option value="Pediatría">Pediatría</option>
+                    <option value="Ortopedia">Ortopedia</option>
+                    <option value="Dermatología">Dermatología</option>
+                    <option value="Ginecología">Ginecología</option>
+                    <option value="Neurología">Neurología</option>
+                    <option value="Oftalmología">Oftalmología</option>
+                    <option value="Psiquiatría">Psiquiatría</option>
+                    <option value="Endocrinología">Endocrinología</option>
+                    <option value="Gastroenterología">Gastroenterología</option>
+                    <option value="Oncología">Oncología</option>
+                    <option value="Neumología">Neumología</option>
+                    <option value="Urología">Urología</option>
+                    <option value="Medicina Interna">Medicina Interna</option>
+                    <option value="Cirugía Plástica">Cirugía Plástica</option>
+                </select>
+            </div>
+
+            <div>
+                <h3>Médico:</h3>
+                <select id="doctor-select">
+                    <option value="">Seleccione un médico</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="calendar">
+            <div class="month-header">
+                <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                <div class="month-title" id="month-title">Mes Año</div>
+                <button id="next-month"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="weekdays">
+                <div class="weekday">Dom</div>
+                <div class="weekday">Lun</div>
+                <div class="weekday">Mar</div>
+                <div class="weekday">Mié</div>
+                <div class="weekday">Jue</div>
+                <div class="weekday">Vie</div>
+                <div class="weekday">Sáb</div>
+            </div>
+            <div class="days" id="days-container"></div>
+        </div>
+        
+        <div id="time-slots-container" class="time-slots-container">
+            <h2 id="selected-date-header"></h2>
+            <div class="time-period">
+                <h3><i class="fas fa-sun"></i> Turno Mañana (7:00 - 12:00)</h3>
+                <div id="morning-slots" class="time-grid"></div>
+            </div>
+            
+            <div class="time-period">
+                <h3><i class="fas fa-moon"></i> Turno Tarde (14:00 - 18:00)</h3>
+                <div id="afternoon-slots" class="time-grid"></div>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color available-legend"></div>
+                    <span>Disponible</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color unavailable-legend"></div>
+                    <span>No disponible</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color booked-legend"></div>
+                    <span>Reservado</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let selectedDate = null;
+        let selectedDoctor = null;
+        const doctors = [
+            { id: "dr1", nombres: "Javier", apellidos: "López", especialidad: "Cardiología" },
+            { id: "dr2", nombres: "Ana", apellidos: "Martínez", especialidad: "Pediatría" },
+            { id: "dr3", nombres: "Carlos", apellidos: "Rodríguez", especialidad: "Ortopedia" },
+            { id: "dr4", nombres: "Laura", apellidos: "García", especialidad: "Dermatología" },
+            { id: "dr5", nombres: "Sofía", apellidos: "Pérez", especialidad: "Ginecología" },
+            { id: "dr6", nombres: "Ricardo", apellidos: "González", especialidad: "Neurología" },
+            { id: "dr7", nombres: "Patricia", apellidos: "Morales", especialidad: "Oftalmología" },
+            { id: "dr8", nombres: "Ernesto", apellidos: "Silva", especialidad: "Psiquiatría" },
+            { id: "dr9", nombres: "Gabriela", apellidos: "Núñez", especialidad: "Endocrinología" },
+            { id: "dr10", nombres: "Luis", apellidos: "Fernández", especialidad: "Gastroenterología" },
+            { id: "dr11", nombres: "Mariana", apellidos: "Ortega", especialidad: "Oncología" },
+            { id: "dr12", nombres: "Oscar", apellidos: "Jiménez", especialidad: "Neumología" },
+            { id: "dr13", nombres: "Luis", apellidos: "Herrera", especialidad: "Urología" },
+            { id: "dr14", nombres: "Claudia", apellidos: "Díaz", especialidad: "Medicina Interna" },
+            { id: "dr15", nombres: "Andrés", apellidos: "Guzmán", especialidad: "Cirugía Plástica" }
+        ];
+        
+        // Cargar médicos al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDoctors();
+            renderCalendar();
+            
+            // Event listeners
+            document.getElementById('specialty-select').addEventListener('change', filterDoctors);
+            document.getElementById('doctor-select').addEventListener('change', function() {
+                selectedDoctor = this.value;
+                document.getElementById('time-slots-container').style.display = 'none';
+                if (selectedDate && selectedDoctor) {
+                    loadAvailability(selectedDoctor, selectedDate);
+                }
+            });
+            
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                renderCalendar();
+            });
+            
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                renderCalendar();
+            });
+        });
+        
+        // Renderizar calendario
+        function renderCalendar() {
+            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+                               "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            document.getElementById('month-title').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+            
+            let daysHTML = '';
+            
+            // Días del mes anterior
+            const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+            for (let i = 0; i < firstDay; i++) {
+                daysHTML += `<div class="day other-month">${daysInPrevMonth - firstDay + i + 1}</div>`;
+            }
+            
+            // Días del mes actual
+            for (let i = 1; i <= daysInMonth; i++) {
+                const date = new Date(currentYear, currentMonth, i);
+                const isToday = date.getDate() === today.getDate() && 
+                                date.getMonth() === today.getMonth() && 
+                                date.getFullYear() === today.getFullYear();
+                
+                const isSelected = selectedDate && 
+                                 date.getDate() === selectedDate.getDate() && 
+                                 date.getMonth() === selectedDate.getMonth() && 
+                                 date.getFullYear() === selectedDate.getFullYear();
+                
+                let dayClass = 'day';
+                if (isToday) dayClass += ' today';
+                if (isSelected) dayClass += ' selected';
+                
+                daysHTML += `<div class="${dayClass}" data-date="${i}">${i}</div>`;
+            }
+            
+            // Días del próximo mes
+            const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+            const remainingDays = totalCells - (firstDay + daysInMonth);
+            for (let i = 1; i <= remainingDays; i++) {
+                daysHTML += `<div class="day other-month">${i}</div>`;
+            }
+            
+            document.getElementById('days-container').innerHTML = daysHTML;
+            
+            // Agregar event listeners a los días
+            document.querySelectorAll('.day:not(.other-month)').forEach(day => {
+                day.addEventListener('click', function() {
+                    // Remover selección anterior
+                    document.querySelectorAll('.day.selected').forEach(d => {
+                        d.classList.remove('selected');
+                    });
+                    
+                    // Seleccionar nuevo día
+                    this.classList.add('selected');
+                    selectedDate = new Date(currentYear, currentMonth, parseInt(this.dataset.date));
+                    
+                    // Mostrar disponibilidad si hay médico seleccionado
+                    if (selectedDoctor) {
+                        loadAvailability(selectedDoctor, selectedDate);
+                    }
+                });
+            });
+        }
+        
+        // Filtrar médicos por especialidad
+        function filterDoctors() {
+            const specialtySelect = document.getElementById('specialty-select');
+            const doctorSelect = document.getElementById('doctor-select');
+            const selectedSpecialty = specialtySelect.value;
+            
+            // Resetear selección de médico
+            doctorSelect.value = '';
+            selectedDoctor = null;
+            
+            // Mostrar solo médicos de la especialidad seleccionada
+            for (let i = 1; i < doctorSelect.options.length; i++) {
+                const option = doctorSelect.options[i];
+                const specialty = option.getAttribute('data-specialty');
+                
+                if (!selectedSpecialty || specialty === selectedSpecialty) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            }
+        }
+        
+        // Cargar lista de médicos
+        function loadDoctors() {
+            const select = document.getElementById('doctor-select');
+            
+            select.innerHTML = '<option value="">Seleccione un médico</option>';
+            doctors.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor.id;
+                option.textContent = `${doctor.nombres} ${doctor.apellidos} - ${doctor.especialidad}`;
+                option.setAttribute('data-specialty', doctor.especialidad);
+                select.appendChild(option);
+            });
+        }
+        
+        // Generar horarios cada 15 minutos dentro de un rango
+        function generateTimeSlots(startHour, endHour) {
+            const slots = [];
+            let currentHour = startHour;
+            
+            while (currentHour < endHour) {
+                const hours = Math.floor(currentHour);
+                const minutes = (currentHour % 1) * 60;
+                const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                slots.push(timeString);
+                currentHour += 0.25; // 15 minutos en formato decimal
+            }
+            
+            return slots;
+        }
+        
+        // Cargar disponibilidad para un médico en una fecha específica
+        function loadAvailability(doctorId, date) {
+            const timeSlotsContainer = document.getElementById('time-slots-container');
+            timeSlotsContainer.style.display = 'block';
+            
+            // Formatear fecha seleccionada
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('selected-date-header').textContent = 
+                `Disponibilidad para el ${date.toLocaleDateString('es-ES', options)}`;
+            
+            // Generar horarios cada 15 minutos
+            const morningSlots = generateTimeSlots(7, 12); // 7:00 - 12:00
+            const afternoonSlots = generateTimeSlots(14, 18); // 14:00 - 18:00
+            
+            // Generar disponibilidad aleatoria
+            const morningAvailability = morningSlots.map(time => ({
+                time,
+                available: Math.random() > 0.3,
+                booked: Math.random() > 0.8
+            }));
+            
+            const afternoonAvailability = afternoonSlots.map(time => ({
+                time,
+                available: Math.random() > 0.3,
+                booked: Math.random() > 0.8
+            }));
+            
+            // Mostrar turnos de mañana
+            const morningContainer = document.getElementById('morning-slots');
+            morningContainer.innerHTML = '';
+            morningAvailability.forEach(slot => {
+                const slotElement = document.createElement('div');
+                let statusClass = 'unavailable';
+                if (slot.available) {
+                    statusClass = slot.booked ? 'booked' : 'available';
+                }
+                slotElement.className = `time-slot ${statusClass}`;
+                slotElement.textContent = slot.time;
+                
+                morningContainer.appendChild(slotElement);
+            });
+            
+            // Mostrar turnos de tarde
+            const afternoonContainer = document.getElementById('afternoon-slots');
+            afternoonContainer.innerHTML = '';
+            afternoonAvailability.forEach(slot => {
+                const slotElement = document.createElement('div');
+                let statusClass = 'unavailable';
+                if (slot.available) {
+                    statusClass = slot.booked ? 'booked' : 'available';
+                }
+                slotElement.className = `time-slot ${statusClass}`;
+                slotElement.textContent = slot.time;
+                
+                afternoonContainer.appendChild(slotElement);
+            });
+        }
+        
+    </script>
+</body>
+</html>

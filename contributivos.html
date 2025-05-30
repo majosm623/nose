@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Cuenta - Usuario Contributivo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/contributivos.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-text">
+                    <h2 id="user-name">Cargando...</h2>
+                    <p id="user-type">Usuario Contributivo</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button class="main-button calendar" onclick="window.location.href='calendario.html'">
+                <i class="fas fa-calendar-alt"></i>
+                <a href="calendario.html" class="main-button appointment"></a>
+                Calendario
+            </button>
+            
+            <button class="main-button doctors" onclick="window.location.href='doctores.html'">
+                <a href="doctores.html" class="main-button appointment"></a>
+                <i class="fas fa-user-md"></i>
+                Doctores
+            </button>
+            
+            <button class="main-button appointment" onclick="window.location.href='agendar-cita.html'">
+                <a href="agenda.html" class="main-button appointment">
+                    <i class="fas fa-calendar-plus"></i>
+                    Agendar Cita
+                </a>
+                
+            </button>
+            
+            <button class="main-button payment">
+                <i class="fas fa-credit-card"></i>
+                Pago en Línea
+            </button>
+        </div>
+        
+        <div class="payment-section">
+            <h3><i class="fas fa-file-invoice-dollar"></i> Estado de Cuenta</h3>
+            
+            <div class="payment-details">
+                <div class="payment-info">
+                    <p>Próximo pago:</p>
+                    <p class="amount" id="payment-amount">$50.000 COP</p>
+                    <p class="due-date" id="payment-due-date"><i class="fas fa-exclamation-circle"></i> Vence el 30/11/2023</p>
+                </div>
+                
+                <button class="pay-now-btn" id="pay-now-btn" onclick="showPaymentModal()">
+                    <i class="fas fa-wallet"></i> Pagar ahora
+                </button>
+            </div>
+            
+            <div class="payment-methods">
+                <h4>Métodos de pago aceptados:</h4>
+                <div class="method-icons">
+                    <div class="method-icon"><i class="fab fa-cc-visa"></i></div>
+                    <div class="method-icon"><i class="fab fa-cc-mastercard"></i></div>
+                    <div class="method-icon"><i class="fab fa-cc-amex"></i></div>
+                    <div class="method-icon"><i class="fab fa-cc-paypal"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+       
+
+        // Función para formatear fecha
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('es-ES', options);
+        }
+
+        // Función para cargar datos del usuario
+        function loadUserData() {
+            // Simulamos un retraso de red
+            setTimeout(() => {
+                document.getElementById('user-name').textContent = userData.name;
+                document.getElementById('user-type').innerHTML = `Usuario ${userData.type} <span class="payment-badge"><i class="fas fa-crown"></i> Plan ${userData.plan}</span>`;
+                
+                document.getElementById('payment-amount').textContent = `${userData.nextPayment.amount.toLocaleString()} ${userData.nextPayment.currency}`;
+                document.getElementById('payment-due-date').innerHTML = `<i class="fas fa-exclamation-circle"></i> Vence el ${formatDate(userData.nextPayment.dueDate)}`;
+            }, 800);
+        }
+
+        // Función para mostrar modal de pago
+        async function showPaymentModal() {
+            const btn = document.getElementById('pay-now-btn');
+            const originalText = btn.innerHTML;
+            
+            try {
+                // Mostrar estado de carga
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fas fa-spinner loading"></i> Procesando...`;
+                
+                // Simular llamada a API para procesar pago
+                const paymentResult = await simulatePayment();
+                
+                if (paymentResult.success) {
+                    alert(`Pago exitoso por ${userData.nextPayment.amount.toLocaleString()} ${userData.nextPayment.currency}`);
+                    // Actualizar estado en la interfaz
+                    document.getElementById('payment-due-date').innerHTML = `<i class="fas fa-check-circle"></i> Pagado - ${formatDate(new Date())}`;
+                    document.getElementById('payment-due-date').style.color = '#2e7d32';
+                } else {
+                    alert("Error en el pago: " + paymentResult.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Ocurrió un error al procesar el pago");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // Función para simular pago (en realidad llamaría a una API)
+        function simulatePayment() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // Simulamos un 90% de éxito en los pagos
+                    const success = Math.random() > 0.1;
+                    resolve({
+                        success,
+                        message: success ? "Pago procesado correctamente" : "Fondos insuficientes",
+                        transactionId: success ? "TXN-" + Math.random().toString(36).substr(2, 9) : null
+                    });
+                }, 2000);
+            });
+        }
+
+        // Cargar datos al iniciar la página
+        document.addEventListener('DOMContentLoaded', loadUserData);
+
+        document.addEventListener('DOMContentLoaded', () => {
+  const user = checkAuth();
+  
+  if (!user) {
+    alert('Debes iniciar sesión primero');
+    window.location.href = 'Iniciar sesion.html';
+    return;
+  }
+
+  // Mostrar datos del usuario
+  document.getElementById('user-name').textContent = user.nombre;
+  document.getElementById('user-type').textContent = user.tipo_usuario;
+  
+  // Cerrar sesión
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    logout();
+    window.location.href = 'Iniciar sesion.html';
+  });
+});
+    </script>
+</body>
+</html>
